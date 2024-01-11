@@ -2,10 +2,17 @@
 
 import { usePathname } from 'next/navigation';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
+import {
+  TabGroup,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from "@tremor/react";
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
-  { name: 'Playground', href: '/playground' }
+  { name: 'Probes', href: '/probes' }
 ];
 
 function classNames(...classes: string[]) {
@@ -60,6 +67,14 @@ export default function Navbar() {
                     </a>
                   ))}
                 </div>
+              </div>
+              <div className="flex flex-shrink-0 items-center">
+                {/* <TabGroup>
+                  <TabList variant="solid" className="mt-8">
+                    <Tab >Light</Tab>
+                    <Tab >Dark</Tab>
+                  </TabList>
+                </TabGroup> */}
               </div>
             </div>
           </div>

@@ -9,7 +9,6 @@ export const metadata = {
   title: 'SmartyPlants',
   description:
     'A web app for managing your plants.',
-  favicon: '/favicon.ico',
 };
 
 export default function RootLayout({
