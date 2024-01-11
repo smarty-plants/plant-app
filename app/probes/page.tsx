@@ -62,6 +62,13 @@ const data = [
 export default function ProbesPage() {
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
+      
+      <Card className="max-w-xs mx-auto" decoration="top" decorationColor="indigo">
+        <Title>Last readings</Title>
+        <Text>11:30 11.01.2024</Text>
+      </Card>
+      <br/>
+      <Text>Probes</Text>
       <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
         {data.map((item) => (
           <Card key={item.category}>
@@ -74,6 +81,17 @@ export default function ProbesPage() {
               <Text>Probe description</Text>
             </Flex>
             <Divider>Current sensors data</Divider>
+            <Flex>
+                <Text>Temperature</Text>
+                <Text>22°C</Text>
+              </Flex>
+              <CategoryBar
+                values={[10, 20, 5, 30, 5, 20, 10]}
+                colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
+                markerValue={62}
+                className="mt-1"
+              />
+              <br/>
             <Flex>
                 <Text>Light level</Text>
                 <Text>62%</Text>
@@ -96,17 +114,7 @@ export default function ProbesPage() {
                 className="mt-1"
               />
               <br/>
-              <Flex>
-                <Text>Temperature</Text>
-                <Text>22°C</Text>
-              </Flex>
-              <CategoryBar
-                values={[10, 20, 5, 30, 5, 20, 10]}
-                colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                markerValue={62}
-                className="mt-1"
-              />
-              <br/>
+              
               <Flex>
                 <Text>Mouisture of soil</Text>
                 <Text>62%</Text>
@@ -142,4 +150,4 @@ export default function ProbesPage() {
       </Grid>
     </main>
   );
-}
+};
