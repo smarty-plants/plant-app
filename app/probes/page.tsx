@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, Text, Title, LineChart, Flex, Grid, CategoryBar, Divider, AreaChart, Icon } from '@tremor/react';
+import {  useState, useEffect } from 'react';
 
 
 const chartdata = [
@@ -60,6 +61,20 @@ const data = [
 ];
 
 export default function ProbesPage() {
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch('http://127.0.0.1:8000/api/probes/daily/');
+      const data = await response.json();
+      console.log(data);
+      setData(data);
+    }
+    fetchData();
+  }, []);
+  
+
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
       
@@ -71,65 +86,65 @@ export default function ProbesPage() {
       <Text>Probes</Text>
       <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
         {data.map((item) => (
-          <Card key={item.category}>
-            <Title>{item.category}</Title>
+          <Card key={item.id}>
+            <Title>{item.name}</Title>
             <Flex
               justifyContent="start"
               alignItems="baseline"
               className="space-x-2"
             >
-              <Text>Probe description</Text>
+              <Text>Plant: {item.plant}</Text>
             </Flex>
             <Divider>Current sensors data</Divider>
             <Flex>
                 <Text>Temperature</Text>
-                <Text>22°C</Text>
+                <Text>{item.temperature.toFixed(2)} °C</Text>
               </Flex>
               <CategoryBar
                 values={[10, 20, 5, 30, 5, 20, 10]}
                 colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                markerValue={62}
+                markerValue={item.temperature}
                 className="mt-1"
               />
               <br/>
             <Flex>
                 <Text>Light level</Text>
-                <Text>62%</Text>
+                <Text>{item.sunlight_procent.toFixed(2)} %</Text>
               </Flex>
               <CategoryBar
                 values={[10, 20, 5, 30, 5, 20, 10]}
                 colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                markerValue={62}
+                markerValue={item.sunlight_procent}
                 className="mt-1"
               />
               <br/>
               <Flex>
                 <Text>Humidity</Text>
-                <Text>62%</Text>
+                <Text>{item.humidity.toFixed(2)} %</Text>
               </Flex>
               <CategoryBar
                 values={[10, 20, 5, 30, 5, 20, 10]}
                 colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                markerValue={62}
+                markerValue={item.humidity}
                 className="mt-1"
               />
               <br/>
               
               <Flex>
                 <Text>Mouisture of soil</Text>
-                <Text>62%</Text>
+                <Text>{item.soil_moisture.toFixed(2)} %</Text>
               </Flex>
               <CategoryBar
                 values={[10, 20, 5, 30, 5, 20, 10]}
                 colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                markerValue={62}
+                markerValue={item.soil_moisture}
                 className="mt-1"
               />
               <Divider>Temperature chart</Divider>
               <LineChart
                 className="mt-4 h-40"
-                data={chartdata}
-                index="datetime"
+                data={item.data}
+                index="time"
                 categories={["Temperature"]}
                 colors={["emerald", "gray"]}
                 valueFormatter={temperatureValueFormatter}
@@ -138,8 +153,8 @@ export default function ProbesPage() {
               <Divider>Other readings chart</Divider>
               <AreaChart
                 className="mt-4 h-40"
-                data={chartdata}
-                index="datetime"
+                data={item.data}
+                index="time"
                 categories={["Humidity", "Light level", "Mouisture of soil"]}
                 colors={["violet", "sky", "rose"]}
                 valueFormatter={percentValueFormatter}
