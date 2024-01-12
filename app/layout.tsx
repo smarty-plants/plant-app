@@ -2,8 +2,8 @@ import './globals.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import Navbar from './navbar';
-import Toast from './toast';
 import { Suspense } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata = {
   title: 'SmartyPlants',
@@ -19,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full bg-gray-50">
       <body className="h-full">
+      <Toaster />
         <Suspense>
           <Navbar />
         </Suspense>
