@@ -2,17 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import {
-  TabGroup,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-} from "@tremor/react";
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
-  { name: 'Probes', href: '/probes' }
+  { name: 'Daily data', href: '/probes' }
 ];
 
 function classNames(...classes: string[]) {

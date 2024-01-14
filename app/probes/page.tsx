@@ -4,11 +4,12 @@ import { Radio } from 'react-loader-spinner';
 import { Card, Text, Title, Grid, Flex } from '@tremor/react';
 import {  useState, useEffect, use } from 'react';
 import ProbeCard from './probe_card';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 type ProbeData = {
   id: number;
   name: string;
+  is_active: boolean;
   plant: string;
   plant_species: string;
   last_read_time: string;
@@ -37,16 +38,7 @@ export default function ProbesPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('http://127.0.0.1:8000/api/probes/daily/').catch((error) => {
-        toast.error('Error fetching data from API', {position: 'bottom-right'});
-      });
-      if (!response) return;
-      const data = await response.json();
-      console.log(data);
-      setData(data.data);
-      setLastReadTime(data.read_time);
-      setIsLoading(false);
-      toast.success('Data fetched successfully', {position: 'bottom-right'});
+      fetchNewData();
     }
     fetchData();
   }, []);
@@ -60,6 +52,7 @@ export default function ProbesPage() {
     console.log(data);
     setData(data.data);
     setLastReadTime(data.read_time);
+    setIsLoading(false);
     toast.success('New data fetched successfully', {position: 'bottom-right'});
   }
 

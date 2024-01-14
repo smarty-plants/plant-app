@@ -1,9 +1,10 @@
-import { Card, Text, Title, LineChart, Flex, CategoryBar, Divider, AreaChart } from '@tremor/react';
-
+import { Card, Text, Title, LineChart, Flex, CategoryBar, Divider, AreaChart, Icon, Badge } from '@tremor/react';
+import { MagnifyingGlassIcon, SignalIcon, SignalSlashIcon } from '@heroicons/react/24/solid';
 
 type ProbeData = {
     id: number;
     name: string;
+    is_active: boolean;
     plant: string;
     plant_species: string;
     last_read_time: string;
@@ -31,7 +32,15 @@ const percentValueFormatter = (number: number | bigint) => `${new Intl.NumberFor
 export default function ProbeCard({probe}: {probe: ProbeData}) {
     return (
         <Card key={probe.id}>
-            <Title>{probe.name}</Title>
+            <Flex justifyContent="center" alignItems="center">
+                <Badge icon={probe.is_active ? SignalIcon : SignalSlashIcon} color={probe.is_active ? "emerald" : "red"}>{probe.is_active ? "Active" : "Inactive"}</Badge>
+            </Flex>
+            <Flex>
+                <Title>{probe.name}</Title>
+                <a href={`/probes/${probe.id}/`}>
+                    <Icon icon={MagnifyingGlassIcon} variant="outlined" tooltip="Details" />
+                </a>
+            </Flex>
             <Flex
               justifyContent="start"
               flexDirection='col'
@@ -108,7 +117,7 @@ export default function ProbeCard({probe}: {probe: ProbeData}) {
                 data={probe.data}
                 index="time"
                 categories={["Humidity", "Light level", "Mouisture of soil"]}
-                colors={["violet", "sky", "rose"]}
+                colors={["sky", "yellow", "lime"]}
                 valueFormatter={percentValueFormatter}
                 showXAxis={false}
                 yAxisWidth={50}
