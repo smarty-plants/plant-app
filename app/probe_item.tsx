@@ -1,6 +1,6 @@
 import { Card, Text, Flex, Metric, List, ListItem, Bold, Badge ,Button } from '@tremor/react';
 import { SignalIcon, SignalSlashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import ReadingBadge from './ReadingBadge';
+import ReadingBadge from './reading_badge';
 
 type StatusType = 'increase' | 'moderateIncrease' | 'normal' | 'moderateDecrease' | 'decrease';
 

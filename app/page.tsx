@@ -3,7 +3,7 @@
 import { Grid ,Flex, Title } from "@tremor/react";
 import {  useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import ProbeItem from "./ProbeItem";
+import ProbeItem from "./probe_item";
 import { Radio } from 'react-loader-spinner';
 
 type StatusType = 'increase' | 'moderateIncrease' | 'normal' | 'moderateDecrease' | 'decrease';
