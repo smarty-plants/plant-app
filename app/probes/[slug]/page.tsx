@@ -74,7 +74,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
   };
 
   const fetchNewData = async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/probes/details/'+params.slug+"/").catch((error) => {
+    const response = await fetch(process.env.API_URL+'api/probes/details/'+params.slug+"/").catch((error) => {
       toast.error('Error fetching data from API', {position: 'bottom-right'});
     });
     if (!response) return;
@@ -118,7 +118,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
             <Card className="h-full overflow-hidden">
               <div className="h-60">
                 <Text>Readings table</Text>
-                <ReadingsTable data={readings} api_url={'http://127.0.0.1:8000/api/probes/details/' + params.slug + "/"} />
+                <ReadingsTable data={readings} api_url={process.env.API_URL+'api/probes/details/' + params.slug + "/"} />
               </div>
             </Card>
           </Col>

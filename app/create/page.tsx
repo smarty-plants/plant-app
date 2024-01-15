@@ -38,7 +38,7 @@ export default function IndexPage() {
   }, [])
 
   const fetchNewData = async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/plants/').catch((error) => {
+    const response = await fetch(process.env.API_URL+'api/plants/').catch((error) => {
       toast.error('Error fetching data from API', {position: 'bottom-right'});
     }
     );
@@ -68,7 +68,7 @@ export default function IndexPage() {
       return;
     }
     const plant_id = plants.find((plant) => plant.name === selectedPlant).id;
-    const response = await fetch('http://127.0.0.1:8000/api/probes/add/', {
+    const response = await fetch(process.env.API_URL+'api/probes/add/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ export default function IndexPage() {
       toast.error('Max soil moisture must be between 0 and 100', {position: 'bottom-right'});
       return;
     }
-    const response = await fetch('http://127.0.0.1:8000/api/plants/add/', {
+    const response = await fetch(process.env.API_URL+'api/plants/add/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
