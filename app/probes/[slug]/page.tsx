@@ -6,12 +6,11 @@ import {  useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Radio } from 'react-loader-spinner';
 import { SignalIcon, SignalSlashIcon } from '@heroicons/react/24/solid';
-import CanvasJS from '@canvasjs/charts';
 
 
 type Reading = {
   id: string;
-  time: Date;
+  time: string;
   "Temperature": number;
   "Humidity": number;
   "Light level": number;
@@ -60,18 +59,23 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
     const from = value.from;
     const to = value.to;
     if (!from || !to){
+      console.log("No date range picked");
       setIsDateRangePicked(false);
       setData(fullData);
       return;
     };
+    console.log("Date range picked");
+    setIsDateRangePicked(true);
+    console.log(isDateRangePicked);
     const filtered_data = fullData?.data.filter((item) => {
       const item_time = new Date(item.time);
       item_time.setHours(0);
       item_time.setMinutes(0);
       item_time.setSeconds(0);
       return (item_time >= from && item_time <= to);
-    });
-    setIsDateRangePicked(true);
+    })
+    if (!data) return;
+    if (!filtered_data) return;
     setData({...data, data: filtered_data});
   };
 
@@ -148,103 +152,82 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                     <Text>Temperature</Text>
                     <Text>{data?.temperature.toFixed(2)} °C</Text>
                   </Flex>
-                  <CategoryBar
-                    values={data.temperature_ranges}
-                    colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                    markerValue={data?.temperature}
-                    showLabels={false}
-                    className="mt-1" />
-                  <br />
-                  <Flex>
-                    <Text>Light level</Text>
-                    <Text>{data?.sunlight_procent.toFixed(2)} %</Text>
-                  </Flex>
-                  <CategoryBar
-                    values={data.sunlight_ranges}
-                    colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                    markerValue={data?.sunlight_procent}
-                    showLabels={false}
-                    className="mt-1" />
-                  <br />
-                  <Flex>
-                    <Text>Humidity</Text>
-                    <Text>{data?.humidity.toFixed(2)} %</Text>
-                  </Flex>
-                  <CategoryBar
-                    values={data.humidity_ranges}
-                    colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                    markerValue={data?.humidity}
-                    showLabels={false}
-                    className="mt-1" />
-                  <br />
-
-                  <Flex>
-                    <Text>Mouisture of soil</Text>
-                    <Text>{data?.soil_moisture.toFixed(2)} %</Text>
-                  </Flex>
-                  <CategoryBar
-                    values={data.soil_moisture_ranges}
-                    colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
-                    markerValue={data?.soil_moisture}
-                    showLabels={false}
-                    className="mt-1" />
+                  {data && (
+                  <><CategoryBar
+                        values={data.temperature_ranges}
+                        colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
+                        markerValue={data?.temperature}
+                        showLabels={false}
+                        className="mt-1" /><br /><Flex>
+                          <Text>Light level</Text>
+                          <Text>{data?.sunlight_procent.toFixed(2)} %</Text>
+                        </Flex><CategoryBar
+                          values={data.sunlight_ranges}
+                          colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
+                          markerValue={data?.sunlight_procent}
+                          showLabels={false}
+                          className="mt-1" /><br /><Flex>
+                          <Text>Humidity</Text>
+                          <Text>{data?.humidity.toFixed(2)} %</Text>
+                        </Flex><CategoryBar
+                          values={data.humidity_ranges}
+                          colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
+                          markerValue={data?.humidity}
+                          showLabels={false}
+                          className="mt-1" /><br /><Flex>
+                          <Text>Mouisture of soil</Text>
+                          <Text>{data?.soil_moisture.toFixed(2)} %</Text>
+                        </Flex><CategoryBar
+                          values={data.soil_moisture_ranges}
+                          colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
+                          markerValue={data?.soil_moisture}
+                          showLabels={false}
+                          className="mt-1" />
+                          </>
+                    )}
                 </div>
               </Card>
             </div>
           </Col>
         </Grid>
         <Card className="mt-6">
-          <Flex>
-            <Text>Temperature chart</Text>
-            <DateRangePicker
-              className="ml-4"
-              onValueChange={handleDateRangeChange}
-              />
-          </Flex>
-          <LineChart
+        {data && (
+          <><Flex>
+                <Text>Temperature chart</Text>
+                <DateRangePicker
+                  className="ml-4"
+                  onValueChange={handleDateRangeChange} />
+              </Flex><LineChart
                   data={data?.data}
                   index="time"
                   categories={["Temperature"]}
                   colors={["emerald", "gray"]}
                   valueFormatter={temperatureValueFormatter}
                   showXAxis={false}
-                  
-                  yAxisWidth={50}
-                />
-          <Divider/>
-          <Text>Humidity chart</Text>
-          <LineChart
-                data={data?.data}
-                index="time"
-                categories={["Humidity"]}
-                colors={["sky"]}
-                valueFormatter={percentValueFormatter}
-                showXAxis={false}
-                yAxisWidth={50}
-              />
-          <Divider/>
 
-          <Text>Light level chart</Text>
-          <LineChart
-                data={data?.data}
-                index="time"
-                categories={["Light level"]}
-                colors={["yellow"]}
-                valueFormatter={percentValueFormatter}
-                showXAxis={false}
-                yAxisWidth={50}
-              />
-          <Divider/>
-          <Text>Mouisture of soil chart</Text>
-          <LineChart
-                data={data?.data}
-                index="time"
-                categories={["Mouisture of soil"]}
-                colors={["lime"]}
-                valueFormatter={percentValueFormatter}
-                showXAxis={false}
-                yAxisWidth={50}
-              />
+                  yAxisWidth={50} /><Divider /><Text>Humidity chart</Text><LineChart
+                  data={data?.data}
+                  index="time"
+                  categories={["Humidity"]}
+                  colors={["sky"]}
+                  valueFormatter={percentValueFormatter}
+                  showXAxis={false}
+                  yAxisWidth={50} /><Divider /><Text>Light level chart</Text><LineChart
+                  data={data?.data}
+                  index="time"
+                  categories={["Light level"]}
+                  colors={["yellow"]}
+                  valueFormatter={percentValueFormatter}
+                  showXAxis={false}
+                  yAxisWidth={50} /><Divider /><Text>Mouisture of soil chart</Text><LineChart
+                  data={data?.data}
+                  index="time"
+                  categories={["Mouisture of soil"]}
+                  colors={["lime"]}
+                  valueFormatter={percentValueFormatter}
+                  showXAxis={false}
+                  yAxisWidth={50} /></>
+              )}
         </Card>
         </>
 }

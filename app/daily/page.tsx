@@ -93,7 +93,7 @@ export default function ProbesPage() {
       ) : null}
       <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
         {data.map((item) => (
-          <ProbeCard probe={item} />
+          <ProbeCard key={item.id} probe={item} />
         ))}
       </Grid>
     </main>

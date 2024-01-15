@@ -11,6 +11,11 @@ type Reading = {
     "Mouisture of soil": number;
   };
 
+  type Item = {
+    [key: string]: string | number | Date;
+  };
+
+  
 export default function ReadingsTable({data, api_url}: {data: Reading[], api_url: string}) {
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 6;
@@ -30,7 +35,7 @@ export default function ReadingsTable({data, api_url}: {data: Reading[], api_url
 
     const pages = Math.ceil(data.length / rowsPerPage);
 
-    let list = useAsyncList({
+    let list = useAsyncList<Item>({
         async load({signal}) {
             let res = await fetch(api_url);
             let json = await res.json();
@@ -43,6 +48,7 @@ export default function ReadingsTable({data, api_url}: {data: Reading[], api_url
             if (sortDescriptor.column === "time"){
                 return {
                     items: items.sort((a, b) => {
+                      if (sortDescriptor && sortDescriptor.column) {
                         let first = new Date(a[sortDescriptor.column]);
                         let second = new Date(b[sortDescriptor.column]);
                         let cmp = first < second ? -1 : 1;
@@ -52,14 +58,19 @@ export default function ReadingsTable({data, api_url}: {data: Reading[], api_url
                         }
               
                         return cmp;
+                      }
+                      return 0;
                       }),
                 }
             }
           return {
             items: items.sort((a, b) => {
+              if (!sortDescriptor || !sortDescriptor.column) {
+                return 0;
+              }
               let first = a[sortDescriptor.column];
               let second = b[sortDescriptor.column];
-              let cmp = (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+              let cmp = (String(first) || first) < (String(second) || second) ? -1 : 1;
     
               if (sortDescriptor.direction === "descending") {
                 cmp *= -1;
@@ -111,7 +122,7 @@ export default function ReadingsTable({data, api_url}: {data: Reading[], api_url
         </TableHeader>
         <TableBody items={items} >
           {(item) => (
-            <TableRow key={item.time}>
+            <TableRow key={(item as { time: string }).time}>
               {(columnKey) => <TableCell>{columnKey!="time"? getKeyValue(item, columnKey).toFixed(2) : getKeyValue(item, columnKey)}</TableCell>}
             </TableRow>
           )}

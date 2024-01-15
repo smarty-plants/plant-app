@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, Title, Dialog, DialogPanel, Text, NumberInput, TextInput, Grid, SearchSelect, SearchSelectItem, Col, LineChart, DateRangePicker,  Metric, Flex, CategoryBar, Divider, AreaChart, Icon, Badge, DateRangePickerValue, Button } from '@tremor/react';
-import {  useState, useEffect } from 'react';
+import {  useState, useEffect, SetStateAction, Key } from 'react';
 import toast from 'react-hot-toast';
 
 
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 export default function IndexPage() {
 
   type Plant = {
+    plant_id: Key | null | undefined;
     id: number;
     name: string;
     species: string;
@@ -67,7 +68,8 @@ export default function IndexPage() {
       toast.error('Plant must be selected', {position: 'bottom-right'});
       return;
     }
-    const plant_id = plants.find((plant) => plant.name === selectedPlant).id;
+    const plant = plants.find((plant : any) => plant.name === selectedPlant);
+    const plant_id = plant?.id;
     const response = await fetch(process.env.API_URL+'/api/probes/add/', {
       method: 'POST',
       headers: {
@@ -88,19 +90,19 @@ export default function IndexPage() {
   
   }
 
-  const handleProbeNameChange = (event) => {
+  const handleProbeNameChange = (event: { target: { value: SetStateAction<string>; }; }) => {
     setProbeName(event.target.value);
   }
 
-  const  handleSelectChange = (event) => {
+  const  handleSelectChange = (event: SetStateAction<string>) => {
 		setSelectedPlant(event);
 	};
 
-  const handlePlantNameChange = (event) => {
+  const handlePlantNameChange = (event: { target: { value: SetStateAction<string>; }; }) => {
     setPlantName(event.target.value);
   }
 
-  const handlePlantSpeciesChange = (event) => {
+  const handlePlantSpeciesChange = (event: { target: { value: SetStateAction<string>; }; }) => {
     setPlantSpecies(event.target.value);
   }
 
@@ -220,7 +222,7 @@ export default function IndexPage() {
       <Dialog open={isPlantOpen} onClose={(val) => setIsOpen(val)} static={true}>
         <DialogPanel>
           <Title className="mb-3">Plant Created Successfully</Title>
-          Your plant "{plantName}" has been created successfully.
+          Your plant &quot;{plantName}&quot; has been created successfully.
           <div className="mt-3">
             <Button variant="light" onClick={() => setIsPlantOpen(false)}>
               Got it!
