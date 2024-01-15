@@ -1,13 +1,12 @@
 'use client';
 
-import { Card, Title, Text, Grid, Col, LineChart, DateRangePicker,  Metric, Flex, CategoryBar, Divider, AreaChart, Icon, Badge, DateRangePickerValue } from '@tremor/react';
+import { Card, Title, Text, Grid, Col, Button, DateRangePicker,  Metric, Flex, CategoryBar, Divider, AreaChart, Icon, Badge, DateRangePickerValue, LineChart } from '@tremor/react';
 import ReadingsTable from './table';
 import {  useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Radio } from 'react-loader-spinner';
 import { SignalIcon, SignalSlashIcon } from '@heroicons/react/24/solid';
-import { it } from 'node:test';
-
+import CanvasJS from '@canvasjs/charts';
 
 
 type Reading = {
@@ -48,6 +47,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
   const [last_read_time, setLastReadTime] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fullData, setFullData] = useState<ProbeData>();
+  const [isDateRangePicked, setIsDateRangePicked] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -60,6 +60,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
     const from = value.from;
     const to = value.to;
     if (!from || !to){
+      setIsDateRangePicked(false);
       setData(fullData);
       return;
     };
@@ -70,17 +71,20 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
       item_time.setSeconds(0);
       return (item_time >= from && item_time <= to);
     });
+    setIsDateRangePicked(true);
     setData({...data, data: filtered_data});
   };
 
   const fetchNewData = async () => {
-    const response = await fetch(process.env.API_URL+'api/probes/details/'+params.slug+"/").catch((error) => {
+    const response = await fetch(process.env.API_URL+'/api/probes/details/'+params.slug+"/").catch((error) => {
       toast.error('Error fetching data from API', {position: 'bottom-right'});
     });
     if (!response) return;
     const data = await response.json();
-    console.log(data);
-    setData(data.data);
+    console.log(isDateRangePicked);
+    if(!isDateRangePicked){
+      setData(data.data);
+    }
     setFullData(data.data);
     setReadings(data.data.data);
     setLastReadTime(data.read_time);
@@ -113,12 +117,18 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
       <Title >{data?.name}</Title>
       <Badge icon={data?.is_active ? SignalIcon : SignalSlashIcon} color={data?.is_active ? "emerald" : "red"}>{data?.is_active ? "Active" : "Inactive"}</Badge>
       </Flex>
-      <Text>{data?.plant} - {data?.plant_species}</Text><Grid numItemsLg={6} className="gap-6 mt-6">
+      <Flex>
+      <Text>{data?.plant} - {data?.plant_species}</Text>
+        <a href={data?.id + "/edit"}>
+          <Button variant='light' color='slate'>Edit probe</Button>
+        </a>
+      </Flex>
+      <Grid numItemsLg={6} className="gap-6 mt-6">
           <Col numColSpanLg={4}>
             <Card className="h-full overflow-hidden">
               <div className="h-60">
                 <Text>Readings table</Text>
-                <ReadingsTable data={readings} api_url={process.env.API_URL+'api/probes/details/' + params.slug + "/"} />
+                <ReadingsTable data={readings} api_url={process.env.API_URL+'/api/probes/details/' + params.slug + "/"} />
               </div>
             </Card>
           </Col>
@@ -139,7 +149,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                     <Text>{data?.temperature.toFixed(2)} °C</Text>
                   </Flex>
                   <CategoryBar
-                    values={data?.temperature_ranges}
+                    values={data.temperature_ranges}
                     colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
                     markerValue={data?.temperature}
                     showLabels={false}
@@ -150,7 +160,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                     <Text>{data?.sunlight_procent.toFixed(2)} %</Text>
                   </Flex>
                   <CategoryBar
-                    values={data?.sunlight_ranges}
+                    values={data.sunlight_ranges}
                     colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
                     markerValue={data?.sunlight_procent}
                     showLabels={false}
@@ -161,7 +171,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                     <Text>{data?.humidity.toFixed(2)} %</Text>
                   </Flex>
                   <CategoryBar
-                    values={data?.humidity_ranges}
+                    values={data.humidity_ranges}
                     colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
                     markerValue={data?.humidity}
                     showLabels={false}
@@ -173,7 +183,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                     <Text>{data?.soil_moisture.toFixed(2)} %</Text>
                   </Flex>
                   <CategoryBar
-                    values={data?.soil_moisture_ranges}
+                    values={data.soil_moisture_ranges}
                     colors={["rose", "orange", "yellow", "emerald", "yellow", "orange", "rose"]}
                     markerValue={data?.soil_moisture}
                     showLabels={false}
@@ -191,7 +201,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
               onValueChange={handleDateRangeChange}
               />
           </Flex>
-          <AreaChart
+          <LineChart
                   data={data?.data}
                   index="time"
                   categories={["Temperature"]}
@@ -203,7 +213,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                 />
           <Divider/>
           <Text>Humidity chart</Text>
-          <AreaChart
+          <LineChart
                 data={data?.data}
                 index="time"
                 categories={["Humidity"]}
@@ -211,11 +221,11 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                 valueFormatter={percentValueFormatter}
                 showXAxis={false}
                 yAxisWidth={50}
-              ></AreaChart>
+              />
           <Divider/>
 
           <Text>Light level chart</Text>
-          <AreaChart
+          <LineChart
                 data={data?.data}
                 index="time"
                 categories={["Light level"]}
@@ -223,10 +233,10 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                 valueFormatter={percentValueFormatter}
                 showXAxis={false}
                 yAxisWidth={50}
-              ></AreaChart>
+              />
           <Divider/>
           <Text>Mouisture of soil chart</Text>
-          <AreaChart
+          <LineChart
                 data={data?.data}
                 index="time"
                 categories={["Mouisture of soil"]}
@@ -234,7 +244,7 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
                 valueFormatter={percentValueFormatter}
                 showXAxis={false}
                 yAxisWidth={50}
-              ></AreaChart>
+              />
         </Card>
         </>
 }

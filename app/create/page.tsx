@@ -38,7 +38,7 @@ export default function IndexPage() {
   }, [])
 
   const fetchNewData = async () => {
-    const response = await fetch(process.env.API_URL+'api/plants/').catch((error) => {
+    const response = await fetch(process.env.API_URL+'/api/plants/').catch((error) => {
       toast.error('Error fetching data from API', {position: 'bottom-right'});
     }
     );
@@ -46,7 +46,7 @@ export default function IndexPage() {
     const data = await response.json();
     console.log(data);
     var i = 0;
-    const plants = data.map((plant) => {
+    const plants = data.map((plant: { plant_id: any; name: string; species: any; }) => {
       i++;
       return {
         id: plant.plant_id,
@@ -68,14 +68,14 @@ export default function IndexPage() {
       return;
     }
     const plant_id = plants.find((plant) => plant.name === selectedPlant).id;
-    const response = await fetch(process.env.API_URL+'api/probes/add/', {
+    const response = await fetch(process.env.API_URL+'/api/probes/add/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        probe_name: probeName,
-        plant_id: plant_id,
+        probe: probeName,
+        plant: plant_id,
       }),
     });
     if (response.status === 201) {
@@ -177,7 +177,7 @@ export default function IndexPage() {
       toast.error('Max soil moisture must be between 0 and 100', {position: 'bottom-right'});
       return;
     }
-    const response = await fetch(process.env.API_URL+'api/plants/add/', {
+    const response = await fetch(process.env.API_URL+'/api/plants/add/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

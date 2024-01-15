@@ -5,7 +5,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
-  { name: 'Daily data', href: '/probes' },
+  { name: 'Daily data', href: '/daily' },
   { name: 'Create', href: '/create' },
 ];
 

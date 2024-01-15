@@ -39,7 +39,7 @@ export default function IndexPage() {
   }, []);
 
   const fetchNewData = async () => {
-    const response = await fetch(process.env.API_URL+'api/probes/current/').catch((error) => {
+    const response = await fetch(process.env.API_URL+'/api/probes/current/').catch((error) => {
       toast.error('Error fetching data from API', {position: 'bottom-right'});
     });
     if (!response) return;
