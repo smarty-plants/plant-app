@@ -2,7 +2,7 @@
 
 import { Radio } from 'react-loader-spinner';
 import { Card, Text, Title, Grid, Flex } from '@tremor/react';
-import {  useState, useEffect, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import ProbeCard from './probe_card';
 import toast from 'react-hot-toast';
 
@@ -31,7 +31,6 @@ type ProbeData = {
 };
 
 export default function ProbesPage() {
-
   const [data, setData] = useState<ProbeData[]>([]);
   const [last_read_time, setLastReadTime] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,8 +43,10 @@ export default function ProbesPage() {
   }, []);
 
   const fetchNewData = async () => {
-    const response = await fetch(process.env.API_URL+'/api/probes/daily/').catch((error) => {
-      toast.error('Error fetching data from API', {position: 'bottom-right'});
+    const response = await fetch(
+      process.env.API_URL + '/api/probes/daily/'
+    ).catch((error) => {
+      toast.error('Error fetching data from API', { position: 'bottom-right' });
     });
     if (!response) return;
     const data = await response.json();
@@ -53,8 +54,10 @@ export default function ProbesPage() {
     setData(data.data);
     setLastReadTime(data.read_time);
     setIsLoading(false);
-    toast.success('New data fetched successfully', {position: 'bottom-right'});
-  }
+    toast.success('New data fetched successfully', {
+      position: 'bottom-right'
+    });
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,35 +65,36 @@ export default function ProbesPage() {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
-  
+
   return (
-    
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      
-      <Card className="max-w-xs mx-auto" decoration="top" decorationColor="indigo">
-      {isLoading ? (
-        <>
-        <Flex>
-        <Title>Loading...</Title>
-        <Radio
-            visible={true}
-            height="30"
-            width="30"
-            colors={["#6366F1", "#6366F1", "#6366F1"]}
-            ariaLabel="radio-loading"/>
-          </Flex>
+      <Card
+        className="max-w-xs mx-auto"
+        decoration="top"
+        decorationColor="indigo"
+      >
+        {isLoading ? (
+          <>
+            <Flex>
+              <Title>Loading...</Title>
+              <Radio
+                visible={true}
+                height="30"
+                width="30"
+                colors={['#6366F1', '#6366F1', '#6366F1']}
+                ariaLabel="radio-loading"
+              />
+            </Flex>
           </>
-      ) : (
-        <>
-        <Title>Last readings</Title>
-        <Text>{last_read_time}</Text>
-        </>
-      )}
+        ) : (
+          <>
+            <Title>Last readings</Title>
+            <Text>{last_read_time}</Text>
+          </>
+        )}
       </Card>
-      <br/>
-      {!isLoading ? (
-      <Text className='mb-3'>Probes:</Text>
-      ) : null}
+      <br />
+      {!isLoading ? <Text className="mb-3">Probes:</Text> : null}
       <Grid numItemsSm={2} numItemsLg={3} className="gap-6">
         {data.map((item) => (
           <ProbeCard key={item.id} probe={item} />
@@ -98,4 +102,4 @@ export default function ProbesPage() {
       </Grid>
     </main>
   );
-};
+}

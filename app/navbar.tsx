@@ -6,7 +6,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 const navigation = [
   { name: 'Dashboard', href: '/' },
   { name: 'Daily data', href: '/daily' },
-  { name: 'Create', href: '/create' },
+  { name: 'Create', href: '/create' }
 ];
 
 function classNames(...classes: string[]) {
@@ -38,10 +38,7 @@ export default function Navbar() {
                       rx="16"
                       fill="currentColor"
                     />
-                    <image
-                    href="/logo.png"
-                    width="32"
-                    height="32"/>
+                    <image href="/logo.png" width="32" height="32" />
                   </svg>
                 </div>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">

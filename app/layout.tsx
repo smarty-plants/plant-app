@@ -7,8 +7,7 @@ import { Toaster } from 'react-hot-toast';
 
 export const metadata = {
   title: 'SmartyPlants',
-  description:
-    'A web app for managing your plants.',
+  description: 'A web app for managing your plants.'
 };
 
 export default function RootLayout({
@@ -19,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full bg-gray-50">
       <body className="h-full">
-      <Toaster />
+        <Toaster />
         <Suspense>
           <Navbar />
         </Suspense>
