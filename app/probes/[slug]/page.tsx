@@ -6,6 +6,7 @@ import {  useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Radio } from 'react-loader-spinner';
 import { SignalIcon, SignalSlashIcon } from '@heroicons/react/24/solid';
+import { clear } from 'console';
 
 
 type Reading = {
@@ -59,14 +60,11 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
     const from = value.from;
     const to = value.to;
     if (!from || !to){
-      console.log("No date range picked");
       setIsDateRangePicked(false);
       setData(fullData);
       return;
     };
-    console.log("Date range picked");
     setIsDateRangePicked(true);
-    console.log(isDateRangePicked);
     const filtered_data = fullData?.data.filter((item) => {
       const item_time = new Date(item.time);
       item_time.setHours(0);
@@ -85,7 +83,6 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
     });
     if (!response) return;
     const data = await response.json();
-    console.log(isDateRangePicked);
     if(!isDateRangePicked){
       setData(data.data);
     }
@@ -96,12 +93,19 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
     toast.success('New data fetched successfully', {position: 'bottom-right'});
   }
 
+  let interval: string | number | NodeJS.Timeout | undefined;
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchNewData();
-    }, 60000);
+    interval = setInterval(fetchNewData, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    clearInterval(interval);
+    interval = setInterval(fetchNewData, 60000);
+    return () => clearInterval(interval);
+  }, [isDateRangePicked]);
+
 
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
