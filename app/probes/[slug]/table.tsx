@@ -33,7 +33,7 @@ export default function ReadingsTable({
   api_url: string;
 }) {
   const [page, setPage] = React.useState(1);
-  const rowsPerPage = 6;
+  const rowsPerPage = 4;
 
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -106,7 +106,7 @@ export default function ReadingsTable({
 
   return (
     <Table
-      removeWrapper
+
       aria-label="Example table with client side pagination"
       sortDescriptor={list.sortDescriptor}
       onSortChange={list.sort}

@@ -167,8 +167,8 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
           <Grid numItemsLg={6} className="gap-6 mt-6">
             <Col numColSpanLg={4}>
               <Card className="h-full overflow-hidden">
-                <div className="h-60">
-                  <Text>Readings table</Text>
+                <div className="h-sm-60">
+                  <Text className='mb-2'>Readings table</Text>
                   <ReadingsTable
                     data={readings}
                     api_url={
@@ -283,13 +283,13 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
           <Card className="mt-6">
             {data && (
               <>
-                <Flex>
+                <div className='d-flex flex-sm-row flex-column'>
                   <Text>Temperature chart</Text>
                   <DateRangePicker
-                    className="ml-4"
+                    className="ml-sm-4 ml-0 mt-sm-0 mt-4"
                     onValueChange={handleDateRangeChange}
                   />
-                </Flex>
+                </div>
                 <LineChart
                   data={data?.data}
                   index="time"
