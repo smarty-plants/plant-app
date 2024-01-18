@@ -54,15 +54,15 @@ export default function ProbesPage() {
     setData(data.data);
     setLastReadTime(data.read_time);
     setIsLoading(false);
-    toast.success('New data fetched successfully', {
-      position: 'bottom-right'
-    });
+    // toast.success('New data fetched successfully', {
+    //   position: 'bottom-right'
+    // });
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
       fetchNewData();
-    }, 60000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 

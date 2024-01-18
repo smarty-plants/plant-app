@@ -110,21 +110,21 @@ export default function IndexPage({ params }: { params: { slug: string } }) {
     setReadings(data.data.data);
     setLastReadTime(data.read_time);
     setIsLoading(false);
-    toast.success('New data fetched successfully', {
-      position: 'bottom-right'
-    });
+    // toast.success('New data fetched successfully', {
+    //   position: 'bottom-right'
+    // });
   };
 
   let interval: string | number | NodeJS.Timeout | undefined;
 
   useEffect(() => {
-    interval = setInterval(fetchNewData, 60000);
+    interval = setInterval(fetchNewData, 3000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     clearInterval(interval);
-    interval = setInterval(fetchNewData, 60000);
+    interval = setInterval(fetchNewData, 3000);
     return () => clearInterval(interval);
   }, [isDateRangePicked]);
 
